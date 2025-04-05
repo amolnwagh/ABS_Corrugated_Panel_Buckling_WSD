@@ -1,4 +1,4 @@
-import  calculations.ABS_Plate_Buckling as ABS
+import  ABS_Plate_Buckling as ABS
 import math
 
 def test_calc_alpha():
@@ -77,7 +77,7 @@ def test_calc_tau_0():
 
  
 def test_calc_stress_E():
-    assert math.isclose(ABS.calc_stress_E(k_s_stress=10.274, t=1.2, s=60), 76514.52387)
+    assert math.isclose(ABS.calc_stress_E(k_s_stress=10.274, t=1.2, s=60, E=2.06e7, nu=0.3), 76514.52387)
 
 
 def test_calc_stress_C():
@@ -112,7 +112,9 @@ my_panel = ABS.Panel(
     sigma_ay= 5000,
     sigma_bx= 2000,
     sigma_by= 1000,
-    tau = 5000
+    tau = 5000,
+    E= 2.06e7,
+    nu= 0.3
 )
 
 
