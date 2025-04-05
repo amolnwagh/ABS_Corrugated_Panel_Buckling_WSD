@@ -1,4 +1,4 @@
-import calculations.ABS_Plate_Buckling as ABS
+import ABS_Plate_Buckling as ABS
 from dataclasses import dataclass
 from math import pi, sqrt, sin, cos, tan, radians
 
@@ -13,9 +13,9 @@ class Corr_Panel(ABS.Panel):
     phi: float # angle of web of corrugated panel with respect to flange (degrees)
     sigma_a_unit_corr: float # maximum compressive stress in unit corrugation (psi)
     sigma_b_unit_corr: float # maximum bending compressive stress in unit corrugation due to hydrostatic pressure (psi)
-    sigma_x_panel: float # calculated average compressive stress in the corrugation direction for entire corrugated panel (psi)
-    sigma_y_panel: float # calculated average compressive stress in the transverse direction for entire corrugated panel (psi)
-    tau_panel_panel: float # in-plane shear stress for entire corrugated panel (psi)
+    sigma_x_cbhd: float # calculated average compressive stress in the corrugation direction for entire corrugated panel (psi)
+    sigma_y_cbhd: float # calculated average compressive stress in the transverse direction for entire corrugated panel (psi)
+    tau_cbhd: float # in-plane shear stress for entire corrugated panel (psi)
     """
     L: float # Length of entire corrugated panel (in) 
     B: float # width of entire corrugated panel (in)
@@ -80,7 +80,56 @@ class Corr_Panel(ABS.Panel):
             self.sigma_EC_unit_c,
             self.eta()
         )
-        
+    
+    def Dx_cbhd(self):
+        return calc_Dx(self.Iy_unit_c(), self.spc_unit_c(), self.E)
+    
+    def Dy_cbhd(self):
+        return calc_Dy(self.a, self.b, self.c, self.t, self.spc_unit_c(), self.E, self.nu)
+    
+    def phi_x_cbhd(self):
+        return calc_phi_x(self.L, self.B, self.Dx_cbhd(), self.Dy_cbhd())
+    
+    def phi_y_cbhd(self):
+        return calc_phi_y(self.L, self.B, self.Dx_cbhd(), self.Dy_cbhd())
+    
+    def kx_cbhd(self):
+        return calc_kx_cbhd(self.L, self.B, self.Dx_cbhd(), self.Dy_cbhd(), self.phi_x_cbhd())
+    
+    def ky_cbhd(self):
+        return calc_ky_cbhd(self.L, self.B, self.Dx_cbhd(), self.Dy_cbhd(), self.phi_y_cbhd())
+    
+    def ks_cbhd(self):
+        return calc_ks_cbhd()
+    
+    def sigma_E_x_cbhd(self):
+        return calc_sigma_Ex_cbhd(self.kx_cbhd(), self.Dx_cbhd(), self.Dy_cbhd(), self.tx_unit_c(), self.B)
+    
+    def sigma_E_y_cbhd(self):
+        return calc_sigma_Ey_cbhd(self.ky_cbhd(), self.Dx_cbhd(), self.Dy_cbhd(), self.t, self.L) 
+    
+    def tau_E_cbhd(self):
+        calc_tau_E_cbhd
+        return calc_tau_E_cbhd(self.ks_cbhd(), self.Dx_cbhd(), self.Dy_cbhd(), self.t, self.L)
+    
+    def sigma_G_x_cbhd(self):
+        return ABS.calc_stress_C(self.sigma_0, self.sigma_E_x_cbhd())
+    
+    def sigma_G_y_cbhd(self):
+        return ABS.calc_stress_C(self.sigma_0, self.sigma_E_y_cbhd())
+    
+    def tau_G_cbhd(self):
+        return ABS.calc_stress_C(self.tau_0, self.tau_E_cbhd())
+    
+    def UC_cbhd(self):
+        return calc_UC_cbhd(self.sigma_x_cbhd,
+                            self.sigma_y_cbhd,
+                            self.tau_cbhd,
+                            self.sigma_G_x_cbhd(),
+                            self.sigma_G_y_cbhd(),
+                            self.tau_G_cbhd(),
+                            self.eta()
+        )
 
 #+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---
 
