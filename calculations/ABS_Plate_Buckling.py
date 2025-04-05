@@ -11,31 +11,31 @@ class Panel:
     """
     load_case_type: str # any item from the list "valid_load_case_types"
     stiffener_type: str # any item from the list "valid_stiffener_types"
-    s: float # length of shorter side of the plate panel (cm)
-    l: float # length of longer side of the plate panel (cm)
-    t: float # thickness of plating (cm)
-    sigma_ax: float # axial stress normal to shorter side (N/cm^2)
-    sigma_ay: float # axial stress normal to longer side (N/cm^2)
-    sigma_bx: float # bending stress normal to shorter side (N/cm^2)
-    sigma_by: float # bending stress normal to longer side (N/cm^2)
-    tau: float = 1e-6 # edge shear stress (N/cm^2)
-    sigma_0: float  = 235000 # yeild stress of panel material (N/cm^2)
-    E: float = 2.06e7 # modulus of elasticity (N/cm^2)
-    nu: float = 0.3 # poisson's ratio for steel
+    s: float # length of shorter side of the plate panel (in)
+    l: float # length of longer side of the plate panel (in)
+    t: float # thickness of plating (in)
+    sigma_ax: float # axial stress normal to shorter side (psi)
+    sigma_ay: float # axial stress normal to longer side (psi)
+    sigma_bx: float # bending stress normal to shorter side (psi)
+    sigma_by: float # bending stress normal to longer side (psi)
+    tau: float # edge shear stress (psi)
+    sigma_0: float # yeild stress of panel material (psi)
+    E: float # modulus of elasticity (psi)
+    nu: float # poisson's ratio for steel
     """
     load_case_type: str # any item from the list "valid_load_case_types"
     stiffener_type: str # any item from the list "valid_stiffener_types"
-    s: float # length of shorter side of the plate panel (cm)
-    l: float # length of longer side of the plate panel (cm)
-    t: float # thickness of plating (cm)
-    sigma_ax: float # axial stress normal to shorter side (N/cm^2)
-    sigma_ay: float # axial stress normal to longer side (N/cm^2)
-    sigma_bx: float # bending stress normal to shorter side (N/cm^2)
-    sigma_by: float # bending stress normal to longer side (N/cm^2)
-    tau: float # edge shear stress (N/cm^2)
-    sigma_0: float  = 235000 # yeild stress of panel material (N/cm^2)
-    E: float = 2.06e7 # modulus of elasticity (N/cm^2)
-    nu: float = 0.3 # poisson's ratio for steel
+    s: float # length of shorter side of the plate panel (in)
+    l: float # length of longer side of the plate panel (in)
+    t: float # thickness of plating (in)
+    sigma_ax: float # axial stress normal to shorter side (psi)
+    sigma_ay: float # axial stress normal to longer side (psi)
+    sigma_bx: float # bending stress normal to shorter side (psi)
+    sigma_by: float # bending stress normal to longer side (psi)
+    tau: float # edge shear stress (psi)
+    sigma_0: float # yeild stress of panel material (psi)
+    E: float # modulus of elasticity (psi)
+    nu: float# poisson's ratio for steel
        
     def alpha(self):
         return calc_alpha(self.l, self.s)
@@ -215,8 +215,8 @@ def calc_kappa(sigma_min:float, sigma_max:float) -> float:
     """calculates ratio of edge stresses
 
     Args:
-        sigma_min (float): minimum stress (Axial Stress + Bending Stress), N/cm2
-        sigma_max (float): maximum stress (Axial Stress - Bending Stress), N/cm2
+        sigma_min (float): minimum stress (Axial Stress + Bending Stress), psi
+        sigma_max (float): maximum stress (Axial Stress - Bending Stress), psi
 
     Returns:
         float: ratio of edge stresses, kappa
@@ -283,10 +283,10 @@ def calc_tau_0(sigma_0:float) -> float:
     """calculate shear strength of plate
 
     Args:
-        sigma_0 (float): specified minimum yield point of plate, N/cm2 
+        sigma_0 (float): specified minimum yield point of plate, psi 
 
     Returns:
-        float: shear strength of plate, N/cm2
+        float: shear strength of plate, psi
     """
     tau_0  = sigma_0/sqrt(3)
     return tau_0
@@ -297,13 +297,13 @@ def calc_stress_E(k_s_stress:float, t:float, s:float, E:float = 2.06e7, nu:float
 
     Args:
         k_s_stress (float): boundary dependent constant
-        t (float): thickness of plating, cm
-        s (float): length of short plate edge, cm
-        E (float, optional): modulus of elasticity. Defaults to 2.06e7, N/cm2 .
+        t (float): thickness of plating, in
+        s (float): length of short plate edge, in
+        E (float, optional): modulus of elasticity. Defaults to 2.06e7, psi .
         nu (float, optional): Poisson's ratio. Defaults to 0.3 for steel.
 
     Returns:
-        float: elastic shear buckling stress, N/cm2 
+        float: elastic shear buckling stress, psi 
     """
     stress_E = k_s_stress * (((pi**2) * E)/(12 * (1 - (nu**2))) ) * (t/s)**2
     return stress_E
@@ -312,12 +312,12 @@ def calc_stress_E(k_s_stress:float, t:float, s:float, E:float = 2.06e7, nu:float
 def calc_stress_C(stress_0:float, stress_E:float, P_r:float = 0.6) -> float:
     """calculate critical buckling stress for edge shear
     Args:
-        stress_0 (float): shear strength of plate, N/cm2
-        stress_E (float): elastic shear buckling stress, N/cm2
+        stress_0 (float): shear strength of plate, psi
+        stress_E (float): elastic shear buckling stress, psi
         P_r (float, optional): proportional linear elastic limit of the structure. Defaults to 0.6 for steel.
 
     Returns:
-        float: critical buckling stress for edge shear, N/cm2
+        float: critical buckling stress for edge shear, psi
     """
     if stress_E <= P_r * stress_0:
         stress_C = stress_E
@@ -331,12 +331,12 @@ def calc_UC_buckling_state_limit(sigma_x_max:float, sigma_y_max:float, tau:float
     """calculates buckling state limit UC
 
     Args:
-        sigma_x_max (float): maximum compressive stress in the longitudinal direction (i.e. normal to shorter side), N/cm2
-        sigma_y_max (float): maximum compressive stress in the transverse direction (i.e. normal to longer side), N/cm2 
-        tau (float): edge shear stress, N/cm2 
-        sigma_C_x (float): critical buckling stress for uniaxial compression in the longitudinal direction, N/cm2
-        sigma_C_y (float): critical buckling stress for uniaxial compression in the transverse direction,N/cm2
-        tau_C (float): critical buckling stress for edge shear, N/cm2 
+        sigma_x_max (float): maximum compressive stress in the longitudinal direction (i.e. normal to shorter side), psi
+        sigma_y_max (float): maximum compressive stress in the transverse direction (i.e. normal to longer side), psi 
+        tau (float): edge shear stress, psi 
+        sigma_C_x (float): critical buckling stress for uniaxial compression in the longitudinal direction, psi
+        sigma_C_y (float): critical buckling stress for uniaxial compression in the transverse direction,psi
+        tau_C (float): critical buckling stress for edge shear, psi 
         eta (float): maximum allowable strength utilization factor, as defined in Subsection 1/11 and 3/1.7
 
     Returns:
