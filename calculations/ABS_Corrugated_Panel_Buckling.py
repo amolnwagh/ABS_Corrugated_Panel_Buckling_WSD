@@ -75,9 +75,9 @@ class Corr_Panel(ABS.Panel):
         return calc_UC_unit_corr(
             self.sigma_a_unit_c,
             self.sigma_b_unit_c,
-            self.sigma_CA_unit_c,
-            self.sigma_CB_unit_c,
-            self.sigma_EC_unit_c,
+            self.sigma_CA_unit_c(),
+            self.sigma_CB_unit_c(),
+            self.sigma_EC_unit_c(),
             self.eta()
         )
     
@@ -119,7 +119,7 @@ class Corr_Panel(ABS.Panel):
         return ABS.calc_stress_C(self.sigma_0, self.sigma_E_y_cbhd())
     
     def tau_G_cbhd(self):
-        return ABS.calc_stress_C(self.tau_0, self.tau_E_cbhd())
+        return ABS.calc_stress_C(self.tau_0(), self.tau_E_cbhd())
     
     def UC_cbhd(self):
         return calc_UC_cbhd(self.sigma_x_cbhd,
@@ -320,8 +320,7 @@ def calc_sigma_EB(kc:float, t:float, a:float, b:float, E:float=30.0e6, nu:float=
     Returns:
         sigma_EB (float): Elastic buckling stress of unit corrugation (psi)
     """
-    bf = max(a,b)
-    sigma_EB = ABS.calc_stress_E(kc,t,bf,E,nu)
+    sigma_EB = kc * E/(12 * (1 - (nu**2))) * (t/max(a,b))**2
     return sigma_EB
 
 
@@ -341,7 +340,7 @@ def calc_UC_unit_corr(sigma_a:float, sigma_b:float, sigma_CA:float, sigma_CB:flo
         UC_unit_corr (float): Unity Check ratio for beam-column buckling of unit corrugation 
         under compressive stress and lateral hydrostatic pressure
     """
-    Cm = 1.0 # Bending moment factor considered for bensing stresses taken directly from Finite ELement Analysis
+    Cm = 1.0 # Bending moment factor considered for bending stresses taken directly from Finite ELement Analysis
     UC_unit_corr = (sigma_a/(eta*sigma_CA)) + ((Cm*sigma_b)/(eta*sigma_CB*(1-(sigma_a/(eta*sigma_EC)))))
     return UC_unit_corr
 

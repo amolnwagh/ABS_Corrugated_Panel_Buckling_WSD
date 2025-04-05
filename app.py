@@ -1,4 +1,5 @@
-import streamlit as st 
+import streamlit as st
+import calculations.ABS_Plate_Buckling as ABS
 import calculations.ABS_Corrugated_Panel_Buckling as ABScorr
 
 
