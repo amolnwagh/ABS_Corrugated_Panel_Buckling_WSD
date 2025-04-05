@@ -292,14 +292,14 @@ def calc_tau_0(sigma_0:float) -> float:
     return tau_0
 
 
-def calc_stress_E(k_s_stress:float, t:float, s:float, E:float = 2.06e7, nu:float=0.3) -> float:
+def calc_stress_E(k_s_stress:float, t:float, s:float, E:float = 30.0e6, nu:float=0.3) -> float:
     """calculate elastic shear buckling stress
 
     Args:
         k_s_stress (float): boundary dependent constant
         t (float): thickness of plating, in
         s (float): length of short plate edge, in
-        E (float, optional): modulus of elasticity. Defaults to 2.06e7, psi .
+        E (float, optional): modulus of elasticity. Defaults to 30.0e6, psi .
         nu (float, optional): Poisson's ratio. Defaults to 0.3 for steel.
 
     Returns:
