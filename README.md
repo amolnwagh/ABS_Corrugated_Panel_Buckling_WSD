@@ -11,4 +11,4 @@
 * Input is given by uploading a `.csv` file. A downloadable sample `.csv` file is also provided with the app. The calculations are populated in a `DataFrame` format and can be downloaded as a `.csv` file.
 
 
-Streamlit app link: https://
+Streamlit app link: https://abs-corrugated-panel-buckling-wsd.streamlit.app/
