@@ -7,7 +7,6 @@ st.download_button(
     data= open("sample_csv\sample.csv","r"),
     file_name="sample_input_data.csv",
     mime="text/csv",
-    # icon=":material/download:",
 )
 
 stf_type = "LOCAL PLATE OF CORRUGATED PANELS"
