@@ -1,6 +1,28 @@
 import streamlit as st
 import calculations.ABS_Plate_Buckling as ABS
 import calculations.ABS_Corrugated_Panel_Buckling as ABScorr
+from io import StringIO
+import pandas as pd
+
+st.markdown("# ABS Corrugated Bulkhead Buckling Checks")
+st.markdown("### (WSD Method) - *July 2022 Edition*")
+st.markdown("#### Readme")
+st.markdown("* Link to ABS Buckling Requirements: https://pub-rm20.apps.eagle.org/r/4/2022-07-01/Buckling-and-Ultimate-Strength-Assessment-for-Offshore-Structures")
+st.markdown("* This app calculates the buckling state limit of corrugated bulkhead panel as per Section 3 of the ABS reference as mentioned above.")
+st.markdown("* Such corrugated panels are typically used in hulls of ships and floating offshore structures like jack-up rigs and semi-submersibles, especially as vertical bounding walls of mud tanks.")
+st.markdown("* Generally, the inputs are details regarding corrugated panel dimensions and material properties.")
+st.markdown("* Instead of loads, the inputs are stresses, since these buckling check calculations are used typically after extracting stresses from a detailed finite element analysis model of the mentioned structures.")
+st.markdown("* Once you enter the stresses, the app gives buckling state limit (UC) checks at individual web and flange panel levels, unit corrugation (beam-column) level, as well as entire corrugated panel level checks. Thus, this is a complete buckling check for the corrugated bulkheads as per ABS Buckling Rules.")
+st.markdown("* Input is given by uploading a `.csv` file. A downloadable sample `.csv` file is also provided with the app. The calculations are populated in a `DataFrame` format and can be downloaded as a `.csv` file.")
+
+st.divider()
+
+st.image(r"figures/typ_stiffened_panel.png","Figure 1: Typical Stiffened Panel")
+st.divider()
+
+st.image(r"figures/loads_on_panel.png","Figure 2: Typical Loads on a Stiffened Panel")
+st.divider()
+
 
 st.download_button(
     label="Download Sample CSV File",
@@ -9,9 +31,21 @@ st.download_button(
     mime="text/csv",
 )
 
-stf_type = "LOCAL PLATE OF CORRUGATED PANELS"
+st.divider()
 
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    df= pd.read_csv(uploaded_file)
+    df=df.astype(float)
+    st.dataframe(df,    )
+
+st.divider()
+    
+stf_type = "LOCAL PLATE OF CORRUGATED PANELS"
 lc = st.selectbox("Select type of load case",["NORMAL OPERATION","SEVERE STORM"])
+
+st.divider()
+
 
 L = 94.488
 B = 188.976
