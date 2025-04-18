@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from math import pi, sqrt
-from handcalcs.decorator import handcalc
     
 valid_stiffener_types = ("ANGLE","TEE","FLAT BAR","BULB PLATE","PLATE ELEMENT","WEB PLATE OF STIFFENERS","LOCAL PLATE OF CORRUGATED PANELS")
 valid_load_case_types = ("NORMAL OPERATION","SEVERE STORM")

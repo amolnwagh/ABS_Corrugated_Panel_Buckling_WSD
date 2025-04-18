@@ -1,8 +1,8 @@
 import streamlit as st
 import calculations.ABS_Plate_Buckling as ABS
 import calculations.ABS_Corrugated_Panel_Buckling as ABScorr
-from io import StringIO
 import pandas as pd
+import calculations.utils as utils
 
 st.markdown("# ABS Corrugated Bulkhead Buckling Checks")
 st.markdown("### (WSD Method) - *July 2022 Edition*")
@@ -29,190 +29,219 @@ st.markdown("#### Step 1: Download the sample CSV file for input template.")
 st.download_button(
     label="Download Sample CSV File",
     data= open("sample_csv\sample.csv","r"),
-    file_name="sample_input_data.csv",
+    file_name="sample.csv",
     mime="text/csv",
 )
 
 st.divider()
 
-st.markdown("#### Step 2: Update the downloaded sample CSV file in Excel or any Text Editor with your data and upload the updated file here.")
+ 
+stf_type = "LOCAL PLATE OF CORRUGATED PANELS"
+st.markdown("#### Step 2: Select the Load Case Type from the dropdown below.")
+lc = st.selectbox("Select type of load case",["NORMAL OPERATION","SEVERE STORM"])
+
+st.markdown("#### Step 3: Update the downloaded sample CSV file in Excel or any Text Editor with your data and upload the updated file here.")
 st.markdown("Note: Once the updated file is uploaded, the data in the uploaded file will be shown in tabulated format below.")
 uploaded_file = st.file_uploader("Choose a file")
+
 if uploaded_file is not None:
     df= pd.read_csv(uploaded_file)
     df=df.astype(float)
-    st.dataframe(df,    )
+    st.dataframe(df)
+else:
+    st.markdown("#### Note: Step 4 and Step 5 will be activated once input file is uploaded.")
+    st.divider()
 
-st.divider()
-    
-stf_type = "LOCAL PLATE OF CORRUGATED PANE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++LS"
--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-lc = st.selectbox("Select type of load case",["NORMAL OPERATION","SEVERE STORM"])
+if uploaded_file is not None:
 
-st.divider()
+    csv_file = df.to_csv("input.csv",index=False)
+    csv_list = utils.read_csv_file("input.csv")
+    num_data = []
+    for lst in csv_list:
+        num_lst = []
+        for inner_item in lst:
+            num_lst.append(utils.str_to_float(inner_item))
+        num_data.append(num_lst)
 
+    # st.write(num_data)
+        
+    new_col_heads = [
+    "panel_a_UC_buckling_state_limit",
+    "panel_b_UC_buckling_state_limit",
+    "panel_c_UC_buckling_state_limit",
+    "sigma_EC_unit_c",
+    "sigma_EB_unit_c",
+    "sigma_CA_unit_c",
+    "sigma_CB_unit_c",
+    "UC_unit_c",
+    "sigma_E_x_cbhd",
+    "sigma_E_y_cbhd",
+    "tau_E_cbhd",
+    "sigma_G_x_cbhd",
+    "sigma_G_y_cbhd",
+    "tau_G_cbhd",
+    "UC_cbhd",]
 
-L = 94.488
-B = 188.976++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-a = 11.811
-b = 15.748
-c = 7.874
-t = 0.750
-phi = 75
-sigma_0 = 51475
-E = 30e6
-nu = 0.3
+    cols = num_data[0] + new_col_heads
 
-sigma_ax_a = 11000
-sigma_ay_a = 8000
-sigma_bx_a = 1e-5
-sigma_by_a = 1e-5
-tau_a = 4000
+    calculated_data = []
+    for lst in num_data[1:]:
 
-sigma_ax_b = 10000
-sigma_ay_b = 7000
-sigma_bx_b = 1e-5
-sigma_by_b = 1e-5
-tau_b = 3000
+        L = lst[0]
+        B = lst[1]
+        a = lst[2]
+        b = lst[3]
+        c = lst[4]
+        t = lst[5]
+        phi = lst[6]
+        sigma_0 = lst[7]
+        E = lst[8]
+        nu = lst[9]
+        
+        sigma_ax_a = lst[10]
+        sigma_ay_a = lst[11]
+        sigma_bx_a = lst[12]
+        sigma_by_a = lst[13]
+        tau_a = lst[14]
+        
+        sigma_ax_b = lst[15]
+        sigma_ay_b = lst[16]
+        sigma_bx_b = lst[17]
+        sigma_by_b = lst[18]
+        tau_b = lst[19]
+        
+        sigma_ax_c = lst[20]
+        sigma_ay_c = lst[21]
+        sigma_bx_c = lst[22]
+        sigma_by_c = lst[23]
+        tau_c = lst[24]
+        
+        sigma_a_unit_c = lst[25]
+        sigma_b_unit_c = lst[26]
+        
+        sigma_x_cbhd = lst[27]
+        sigma_y_cbhd = lst[28]
+        tau_cbhd = lst[29]
+        
+        panel_a = ABScorr.Corr_Panel(
+                                    lc,
+                                    stf_type,
+                                    a,
+                                    L,
+                                    t,
+                                    sigma_ax_a,
+                                    sigma_ay_a,
+                                    sigma_bx_a,
+                                    sigma_by_a,
+                                    tau_a,
+                                    sigma_0,
+                                    E,
+                                    nu,
+                                    L,
+                                    B,
+                                    a,
+                                    b,
+                                    c,
+                                    phi,
+                                    sigma_a_unit_c,
+                                    sigma_b_unit_c,
+                                    sigma_x_cbhd,
+                                    sigma_y_cbhd,
+                                    tau_cbhd
+                                    )
 
-sigma_ax_c = 9000
-sigma_ay_c = 6000
-sigma_bx_c = 1e-5
-sigma_by_c = 1e-5
-tau_c = 2000
+        panel_b = ABScorr.Corr_Panel(
+                                    lc,
+                                    stf_type,
+                                    b,
+                                    L,
+                                    t,
+                                    sigma_ax_b,
+                                    sigma_ay_b,
+                                    sigma_bx_b,
+                                    sigma_by_b,
+                                    tau_b,
+                                    sigma_0,
+                                    E,
+                                    nu,
+                                    L,
+                                    B,
+                                    a,
+                                    b,
+                                    c,
+                                    phi,
+                                    sigma_a_unit_c,
+                                    sigma_b_unit_c,
+                                    sigma_x_cbhd,
+                                    sigma_y_cbhd,
+                                    tau_cbhd
+                                    )
 
-sigma_a_unit_c = 12500
-sigma_b_unit_c = 10000
+        panel_c = ABScorr.Corr_Panel(
+                                    lc,
+                                    stf_type,
+                                    c,
+                                    L,
+                                    t,
+                                    sigma_ax_c,
+                                    sigma_ay_c,
+                                    sigma_bx_c,
+                                    sigma_by_c,
+                                    tau_c,
+                                    sigma_0,
+                                    E,
+                                    nu,
+                                    L,
+                                    B,
+                                    a,
+                                    b,
+                                    c,
+                                    phi,
+                                    sigma_a_unit_c,
+                                    sigma_b_unit_c,
+                                    sigma_x_cbhd,
+                                    sigma_y_cbhd,
+                                    tau_cbhd
+                                    )
+        
+        # st.write(panel_a)
+        
+        new_cols = [
+            panel_a.UC_buckling_state_limit(),
+            panel_b.UC_buckling_state_limit(),
+            panel_c.UC_buckling_state_limit(),
+            panel_a.sigma_EC_unit_c(),
+            panel_a.sigma_EB_unit_c(),
+            panel_a.sigma_CA_unit_c(),
+            panel_a.sigma_CB_unit_c(),
+            panel_a.UC_unit_c(),
+            panel_a.sigma_E_x_cbhd(),
+            panel_a.sigma_E_y_cbhd(),
+            panel_a.tau_E_cbhd(),
+            panel_a.sigma_G_x_cbhd(),
+            panel_a.sigma_G_y_cbhd(),
+            panel_a.tau_G_cbhd(),
+            panel_a.UC_cbhd(),   
+        ]
+        lst_updt = lst + new_cols
+        calculated_data.append(lst_updt)
+            
 
-sigma_x_cbhd = 10000
-sigma_y_cbhd = 7500
-tau_cbhd = 5000
-    
-panel_a = ABScorr.Corr_Panel(lc,stf_type,
-                                  a,
-                                  L,
-                                  t,
-                                  sigma_ax_a,
-                                  sigma_ay_a,
-                                  sigma_bx_a,
-                                  sigma_by_a,
-                                  tau_a,
-                                  sigma_0,
-                                  E,
-                                  nu,
-                                  L,
-                                  B,
-                                  a,
-                                  b,
-                                  c,
-                                  phi,
-                                  sigma_a_unit_c,
-                                  sigma_b_unit_c,
-                                  sigma_x_cbhd,
-                                  sigma_y_cbhd,
-                                  tau_cbhd)
+    st.divider()
 
-panel_b = ABScorr.Corr_Panel(lc,stf_type,
-                                  b,
-                                  L,
-                                  t,
-                                  sigma_ax_b,
-                                  sigma_ay_b,
-                                  sigma_bx_b,
-                                  sigma_by_b,
-                                  tau_b,
-                                  sigma_0,
-                                  E,
-                                  nu,
-                                  L,
-                                  B,
-                                  a,
-                                  b,
-                                  c,
-                                  phi,
-                                  sigma_a_unit_c,
-                                  sigma_b_unit_c,
-                                  sigma_x_cbhd,
-                                  sigma_y_cbhd,
-                                  tau_cbhd)
+    st.markdown("#### Step 4: Review the Buckling Checks in Tabulated Format below.")
+    results_df = pd.DataFrame(calculated_data,columns=cols)
+    st.dataframe(results_df)
 
-panel_c = ABScorr.Corr_Panel(lc,stf_type,
-                                  a,
-                                  L,
-                                  t,
-                                  sigma_ax_c,
-                                  sigma_ay_c,
-                                  sigma_bx_c,
-                                  sigma_by_c,
-                                  tau_c,
-                                  sigma_0,
-                                  E,
-                                  nu,
-                                  L,
-                                  B,
-                                  a,
-                                  b,
-                                  c,
-                                  phi,
-                                  sigma_a_unit_c,
-                                  sigma_b_unit_c,
-                                  sigma_x_cbhd,
-                                  sigma_y_cbhd,
-                                  tau_cbhd)
+    st.divider()
 
+    st.markdown("#### Step 5: Download the Results in Table (CSV) format using download button below.")
+    st.download_button(
+        label="Download Results CSV File",
+        data= results_df.to_csv(index=False).encode("utf-8"),
+        file_name="Results.csv",
+        mime="text/csv",
+    )
 
-
-st.write(f"Checks for Panel A:\n"
-f"{panel_a.UC_cbhd()=}\n"
-f"{panel_a.Dx_cbhd()=}\n"
-f"{panel_a.Dy_cbhd()=}\n"
-f"{panel_a.phi_x_cbhd()=}\n"
-f"{panel_a.phi_y_cbhd()=}\n"
-f"{panel_a.kx_cbhd()=}\n"
-f"{panel_a.ky_cbhd()=}\n"
-f"{panel_a.ks_cbhd()=}\n"
-f"{panel_a.sigma_E_x_cbhd()=}\n"
-f"{panel_a.sigma_E_y_cbhd()=}\n"
-f"{panel_a.tau_E_cbhd()=}\n"
-f"{panel_a.sigma_G_x_cbhd()=}\n"
-f"{panel_a.sigma_G_y_cbhd()=}\n"
-f"{panel_a.tau_G_cbhd()=}\n"
-f"{panel_a.UC_cbhd()=}\n"
-)
-
-st.write(f"Checks for Panel B:\n"
-f"{panel_b.UC_cbhd()=}\n"
-f"{panel_b.Dx_cbhd()=}\n"
-f"{panel_b.Dy_cbhd()=}\n"
-f"{panel_b.phi_x_cbhd()=}\n"
-f"{panel_b.phi_y_cbhd()=}\n"
-f"{panel_b.kx_cbhd()=}\n"
-f"{panel_b.ky_cbhd()=}\n"
-f"{panel_b.ks_cbhd()=}\n"
-f"{panel_b.sigma_E_x_cbhd()=}\n"
-f"{panel_b.sigma_E_y_cbhd()=}\n"
-f"{panel_b.tau_E_cbhd()=}\n"
-f"{panel_b.sigma_G_x_cbhd()=}\n"
-f"{panel_b.sigma_G_y_cbhd()=}\n"
-f"{panel_b.tau_G_cbhd()=}\n"
-f"{panel_b.UC_cbhd()=}\n"
-)
-
-st.write(f"Checks for Panel C:\n"
-f"{panel_c.UC_cbhd()=}\n"
-f"{panel_c.Dx_cbhd()=}\n"
-f"{panel_c.Dy_cbhd()=}\n"
-f"{panel_c.phi_x_cbhd()=}\n"
-f"{panel_c.phi_y_cbhd()=}\n"
-f"{panel_c.kx_cbhd()=}\n"
-f"{panel_c.ky_cbhd()=}\n"
-f"{panel_c.ks_cbhd()=}\n"
-f"{panel_c.sigma_E_x_cbhd()=}\n"
-f"{panel_c.sigma_E_y_cbhd()=}\n"
-f"{panel_c.tau_E_cbhd()=}\n"
-f"{panel_c.sigma_G_x_cbhd()=}\n"
-f"{panel_c.sigma_G_y_cbhd()=}\n"
-f"{panel_c.tau_G_cbhd()=}\n"
-f"{panel_c.UC_cbhd()=}\n"
-)
+    st.divider()
 
