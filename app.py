@@ -19,11 +19,13 @@ st.divider()
 
 st.image(r"figures/typ_stiffened_panel.png","Figure 1: Typical Stiffened Panel")
 st.divider()
-
 st.image(r"figures/loads_on_panel.png","Figure 2: Typical Loads on a Stiffened Panel")
+st.divider()
+st.image(r"figures/corrugated_panel_dimensions.jpg","Figure 3: Typical Dimensions of a Corrugated Bulkhead Panel")
 st.divider()
 
 
+st.markdown("#### Step 1: Download the sample CSV file for input template.")
 st.download_button(
     label="Download Sample CSV File",
     data= open("sample_csv\sample.csv","r"),
@@ -33,6 +35,8 @@ st.download_button(
 
 st.divider()
 
+st.markdown("#### Step 2: Update the downloaded sample CSV file in Excel or any Text Editor with your data and upload the updated file here.")
+st.markdown("Note: Once the updated file is uploaded, the data in the uploaded file will be shown in tabulated format below.")
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
     df= pd.read_csv(uploaded_file)
@@ -41,14 +45,15 @@ if uploaded_file is not None:
 
 st.divider()
     
-stf_type = "LOCAL PLATE OF CORRUGATED PANELS"
+stf_type = "LOCAL PLATE OF CORRUGATED PANE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++LS"
+-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 lc = st.selectbox("Select type of load case",["NORMAL OPERATION","SEVERE STORM"])
 
 st.divider()
 
 
 L = 94.488
-B = 188.976
+B = 188.976++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 a = 11.811
 b = 15.748
 c = 7.874
