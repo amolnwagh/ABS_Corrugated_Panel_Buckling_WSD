@@ -28,7 +28,7 @@ st.divider()
 st.markdown("#### Step 1: Download the sample CSV file for input template.")
 st.download_button(
     label="Download Sample CSV File",
-    data= open("sample_csv\sample.csv","r"),
+    data= open("sample_csv/sample.csv","r"),
     file_name="sample.csv",
     mime="text/csv",
 )
