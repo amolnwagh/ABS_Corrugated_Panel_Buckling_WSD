@@ -14,6 +14,7 @@ st.markdown("* Generally, the inputs are details regarding corrugated panel dime
 st.markdown("* Instead of loads, the inputs are stresses, since these buckling check calculations are used typically after extracting stresses from a detailed finite element analysis model of the mentioned structures.")
 st.markdown("* Once you enter the stresses, the app gives buckling state limit (UC) checks at individual web and flange panel levels, unit corrugation (beam-column) level, as well as entire corrugated panel level checks. Thus, this is a complete buckling check for the corrugated bulkheads as per ABS Buckling Rules.")
 st.markdown("* Input is given by uploading a `.csv` file. A downloadable sample `.csv` file is also provided with the app. The calculations are populated in a `DataFrame` format and can be downloaded as a `.csv` file.")
+st.markdown("* Input units are Imperial - 'inches' for length, 'degree' for angles and 'psi' for stress")
 
 st.divider()
 
