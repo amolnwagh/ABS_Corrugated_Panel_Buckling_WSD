@@ -1,4 +1,4 @@
-import ABS_Plate_Buckling as ABS
+import calculations.ABS_Plate_Buckling as ABS
 from dataclasses import dataclass
 from math import pi, sqrt, sin, cos, tan, radians
 
